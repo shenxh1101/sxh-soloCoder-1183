@@ -1,0 +1,130 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+  position: relative;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.95;
+    transform: scale(0.99);
+  }
+}
+
+.header {
+  margin-bottom: $spacing-sm;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-xs;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  flex: 1;
+  @include text-ellipsis;
+  margin-right: $spacing-sm;
+}
+
+.bookmarkBtn {
+  padding: $spacing-xs;
+  flex-shrink: 0;
+}
+
+.bookmarkIcon {
+  font-size: $font-size-lg;
+  color: $color-text-tertiary;
+}
+
+.bookmarked {
+  .bookmarkIcon {
+    color: $color-salary;
+  }
+}
+
+.salary {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-salary;
+}
+
+.companyRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.companyLogo {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-xs;
+  margin-right: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.companyName {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  @include text-ellipsis;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-sm;
+}
+
+.infoTag {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.infoDot {
+  font-size: $font-size-xs;
+  color: $color-text-disabled;
+  margin: 0 6rpx;
+}
+
+.tagsRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.tag {
+  background: $color-tag-bg;
+  border-radius: $radius-xs;
+  padding: 4rpx 12rpx;
+}
+
+.tagText {
+  font-size: $font-size-xs;
+  color: $color-tag-text;
+  white-space: nowrap;
+}
+
+.appliedBadge {
+  position: absolute;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  background: rgba($color-primary, 0.1);
+  border-radius: $radius-xs;
+  padding: 2rpx 12rpx;
+}
+
+.appliedText {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  white-space: nowrap;
+}
