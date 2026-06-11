@@ -1,0 +1,266 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background: $color-bg-light;
+  padding-bottom: $spacing-lg;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  background: $color-bg-card;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.publishBtn {
+  padding: $spacing-sm $spacing-md;
+  background: $color-primary;
+  border-radius: $radius-button;
+}
+
+.publishBtnText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.scrollArea {
+  padding: $spacing-md $spacing-lg;
+  height: calc(100vh - 120rpx);
+  box-sizing: border-box;
+}
+
+.jobCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.jobHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.jobInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.jobTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.jobSalary {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-salary;
+}
+
+.statusBadge {
+  padding: 4rpx 16rpx;
+  border-radius: $radius-xs;
+  margin-left: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.statusText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+}
+
+.statusOnline {
+  background: rgba($color-success, 0.1);
+  .statusText { color: $color-success; }
+}
+
+.statusOffline {
+  background: rgba($color-text-tertiary, 0.1);
+  .statusText { color: $color-text-tertiary; }
+}
+
+.jobMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-sm;
+  gap: $spacing-xs;
+}
+
+.metaTag {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.jobTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+}
+
+.jobTag {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  background: rgba($color-primary, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: $radius-xs;
+}
+
+.jobFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-sm;
+  border-top: 1rpx solid $color-divider;
+}
+
+.publishTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.viewApplications {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.actionRow {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.actionBtn {
+  flex: 1;
+  height: $button-height-sm;
+  border-radius: $radius-button;
+  background: $color-bg-hover;
+  @include flex-center;
+  @include button-reset;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.actionBtnText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.btnOffline {
+  background: rgba($color-error, 0.1);
+  .actionBtnText { color: $color-error; }
+}
+
+.btnOnline {
+  background: rgba($color-success, 0.1);
+  .actionBtnText { color: $color-success; }
+}
+
+.editPanel {
+  margin-top: $spacing-md;
+  padding: $spacing-md;
+  background: $color-bg-light;
+  border-radius: $radius-md;
+}
+
+.editItem {
+  margin-bottom: $spacing-md;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.editLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+  display: block;
+}
+
+.editInput {
+  width: 100%;
+  height: 72rpx;
+  padding: 0 $spacing-md;
+  background: $color-bg-card;
+  border: 1rpx solid $color-divider;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.editRow {
+  display: flex;
+  margin-bottom: $spacing-md;
+}
+
+.editTextarea {
+  width: 100%;
+  min-height: 160rpx;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-card;
+  border: 1rpx solid $color-divider;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.editActions {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.editActionBtn {
+  flex: 1;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  @include flex-center;
+  @include button-reset;
+  transition: all $transition-base;
+}
+
+.editActionBtnText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.btnCancel {
+  background: $color-bg-hover;
+  .editActionBtnText { color: $color-text-secondary; }
+}
+
+.btnSave {
+  background: $color-primary;
+  .editActionBtnText { color: $color-text-white; }
+}

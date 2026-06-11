@@ -18,7 +18,7 @@ const seekerMenus = [
 
 const companyMenus = [
   { icon: '📌', text: '发布职位', url: '/pages/publish-job/index' },
-  { icon: '📊', text: '已发布职位', url: '' },
+  { icon: '📊', text: '已发布职位', url: '/pages/my-jobs/index' },
   { icon: '📋', text: '收到的投递', url: '/pages/applications/index' },
   { icon: '🔒', text: '隐私设置', url: '/pages/privacy-settings/index' },
   { icon: '🚫', text: '黑名单管理', url: '/pages/blacklist/index' },

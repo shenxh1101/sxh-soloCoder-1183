@@ -10,12 +10,18 @@ interface JobState {
   toggleBookmark: (id: string) => void;
   applyJob: (id: string) => void;
   addJob: (job: Job) => void;
+  updateJob: (id: string, updates: Partial<Job>) => void;
+  toggleJobStatus: (id: string) => void;
   getBookmarkedJobs: () => Job[];
   getAppliedJobs: () => Job[];
+  getCompanyJobs: (companyName: string) => Job[];
+  getOnlineJobs: () => Job[];
 }
 
+const initJobs = mockJobs.map((job) => ({ ...job, status: (job.status || 'online') as 'online' | 'offline' }));
+
 export const useJobStore = create<JobState>((set, get) => ({
-  jobs: mockJobs,
+  jobs: initJobs,
 
   getJobById: (id: string) => {
     return get().jobs.find((job) => job.id === id);
@@ -67,9 +73,28 @@ export const useJobStore = create<JobState>((set, get) => ({
           publishedAt: new Date().toISOString().split('T')[0],
           isBookmarked: false,
           isApplied: false,
+          status: 'online',
         },
         ...state.jobs,
       ],
+    }));
+  },
+
+  updateJob: (id: string, updates: Partial<Job>) => {
+    set((state) => ({
+      jobs: state.jobs.map((job) =>
+        job.id === id ? { ...job, ...updates } : job
+      ),
+    }));
+  },
+
+  toggleJobStatus: (id: string) => {
+    set((state) => ({
+      jobs: state.jobs.map((job) =>
+        job.id === id
+          ? { ...job, status: job.status === 'offline' ? 'online' : 'offline' }
+          : job
+      ),
     }));
   },
 
@@ -79,5 +104,13 @@ export const useJobStore = create<JobState>((set, get) => ({
 
   getAppliedJobs: () => {
     return get().jobs.filter((job) => job.isApplied);
+  },
+
+  getCompanyJobs: (companyName: string) => {
+    return get().jobs.filter((job) => job.company === companyName);
+  },
+
+  getOnlineJobs: () => {
+    return get().jobs.filter((job) => job.status !== 'offline');
   },
 }));

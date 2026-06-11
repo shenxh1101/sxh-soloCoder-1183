@@ -10,6 +10,7 @@ interface MessageState {
   sendMessage: (chatId: string, content: string, type?: 'text' | 'job_card', jobCard?: any) => void;
   markAsRead: (chatId: string) => void;
   getTotalUnread: () => number;
+  markJobCardApplied: (chatId: string, jobId: string) => void;
 }
 
 export const useMessageStore = create<MessageState>((set, get) => ({
@@ -101,5 +102,18 @@ export const useMessageStore = create<MessageState>((set, get) => ({
 
   getTotalUnread: () => {
     return get().chats.reduce((sum, chat) => sum + chat.unreadCount, 0);
+  },
+
+  markJobCardApplied: (chatId: string, jobId: string) => {
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [chatId]: (state.messages[chatId] || []).map((m) =>
+          m.type === 'job_card' && m.jobCard?.id === jobId
+            ? { ...m, jobApplied: true }
+            : m
+        ),
+      },
+    }));
   },
 }));

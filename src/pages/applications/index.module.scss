@@ -211,3 +211,119 @@
   color: $color-text-secondary;
   font-weight: $font-weight-medium;
 }
+
+.header {
+  background: $color-bg-card;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.jobFilter {
+  display: flex;
+  align-items: center;
+}
+
+.jobFilterLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-right: $spacing-xs;
+}
+
+.jobSelect {
+  display: flex;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  background: $color-bg-light;
+  border-radius: $radius-sm;
+  max-width: 280rpx;
+}
+
+.jobSelectText {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  max-width: 220rpx;
+}
+
+.jobSelectArrow {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+  margin-left: $spacing-xs;
+  flex-shrink: 0;
+}
+
+.listArea {
+  flex: 1;
+  padding: $spacing-md $spacing-lg;
+  height: calc(100vh - 260rpx);
+  box-sizing: border-box;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-round;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.jobTitle {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  @include text-ellipsis;
+  display: block;
+}
+
+.applyTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.actionRow {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.btnView {
+  background: rgba($color-info, 0.1);
+  .actionBtnText { color: $color-info; }
+}
+
+.btnInterview {
+  background: rgba($color-success, 0.1);
+  .actionBtnText { color: $color-success; }
+}
+
+.btnReject {
+  background: rgba($color-error, 0.1);
+  .actionBtnText { color: $color-error; }
+}
+
+.btnHire {
+  background: $color-primary;
+  .actionBtnText { color: $color-text-white; }
+}

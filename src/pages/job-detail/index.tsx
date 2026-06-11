@@ -5,14 +5,17 @@ import classnames from 'classnames';
 import { useJobStore } from '@/store/useJobStore';
 import { useApplicationStore } from '@/store/useApplicationStore';
 import { useResumeStore } from '@/store/useResumeStore';
+import { useMessageStore } from '@/store/useMessageStore';
 import styles from './index.module.scss';
 
 const JobDetailPage: React.FC = () => {
   const router = useRouter();
   const jobId = router.params.id || '';
+  const chatId = router.params.chatId || '';
   const { getJobById, toggleBookmark, applyJob } = useJobStore();
   const { addApplication } = useApplicationStore();
   const { resume } = useResumeStore();
+  const { markJobCardApplied } = useMessageStore();
 
   const job = getJobById(jobId);
   const [localJob, setLocalJob] = useState(job);
@@ -55,6 +58,11 @@ const JobDetailPage: React.FC = () => {
       applicantAvatar: resume.avatar,
       jobId: localJob.id,
     });
+
+    if (chatId) {
+      markJobCardApplied(chatId, jobId);
+    }
+
     setLocalJob(getJobById(jobId));
     Taro.showToast({ title: '投递成功！', icon: 'success' });
   };

@@ -341,3 +341,169 @@
   color: $color-primary;
   margin-right: $spacing-sm;
 }
+
+.jobCardApplied {
+  opacity: 0.75;
+  border: 2rpx solid $color-success !important;
+}
+
+.jobCardMsgFooter {
+  margin-top: $spacing-md;
+  padding-top: $spacing-sm;
+  border-top: 1rpx dashed $color-divider;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jobCardMsgLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.jobCardMsgAction {
+  font-size: $font-size-xs;
+  color: $color-primary;
+}
+
+.jobConfirmArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.jobConfirmCard {
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-lg;
+}
+
+.jobConfirmTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.jobConfirmSalary {
+  font-size: $font-size-md;
+  color: $color-salary;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-xs;
+}
+
+.jobConfirmMeta {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.greetingArea {
+  margin-bottom: $spacing-lg;
+}
+
+.greetingLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+}
+
+.greetingInputBox {
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.greetingInput {
+  width: 100%;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.greetingPreset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.greetingPresetItem {
+  padding: $spacing-xs $spacing-sm;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+  border: 1rpx solid $color-divider;
+
+  &:active {
+    background: $color-primary-light;
+    border-color: $color-primary;
+  }
+}
+
+.greetingPresetText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.jobConfirmActions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.jobConfirmBack {
+  flex: 1;
+  height: 80rpx;
+  background: $color-bg-page;
+  border-radius: $radius-button;
+  @include flex-center;
+  border: 1rpx solid $color-divider;
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.jobConfirmBackText {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.jobConfirmSend {
+  flex: 1.5;
+  height: 80rpx;
+  background: $color-primary;
+  border-radius: $radius-button;
+  @include flex-center;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.jobConfirmSendText {
+  font-size: $font-size-md;
+  color: $color-text-white;
+  font-weight: $font-weight-semibold;
+}
+
+.inputActions {
+  display: flex;
+  align-items: center;
+  margin-right: $spacing-sm;
+}
+
+.inputActionBtn {
+  width: 64rpx;
+  height: 64rpx;
+  @include flex-center;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+
+  &:active {
+    background: $color-divider;
+  }
+}
+
+.inputActionIcon {
+  font-size: $font-size-lg;
+}

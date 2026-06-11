@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
-import Taro, { useDidShow } from '@tarojs/taro';
+import Taro, { useDidShow, useRouter } from '@tarojs/taro';
 import classnames from 'classnames';
 import { useApplicationStore } from '@/store/useApplicationStore';
+import { useInterviewStore } from '@/store/useInterviewStore';
+import { useJobStore } from '@/store/useJobStore';
+import { mockUserProfile } from '@/data/profile';
 import EmptyState from '@/components/EmptyState';
 import styles from './index.module.scss';
 
@@ -26,36 +29,63 @@ const statusStyles: Record<string, string> = {
 };
 
 const ApplicationsPage: React.FC = () => {
+  const router = useRouter();
+  const jobTitleFromUrl = router.params.jobTitle ? decodeURIComponent(router.params.jobTitle) : '';
   const [activeTab, setActiveTab] = useState<StatusType>('all');
+  const [selectedJob, setSelectedJob] = useState<string>(jobTitleFromUrl || 'all');
   const { applications, updateApplicationStatus } = useApplicationStore();
+  const { addInterview } = useInterviewStore();
+  const { getCompanyJobs } = useJobStore();
+
+  const companyJobs = getCompanyJobs(mockUserProfile.companyName);
+
+  const filteredByJob = useMemo(() => {
+    if (selectedJob === 'all') return applications;
+    return applications.filter((app) => app.jobTitle === selectedJob);
+  }, [selectedJob, applications]);
 
   const filteredApplications = useMemo(() => {
-    if (activeTab === 'all') return applications;
-    return applications.filter((app) => app.status === activeTab);
-  }, [activeTab, applications]);
+    if (activeTab === 'all') return filteredByJob;
+    return filteredByJob.filter((app) => app.status === activeTab);
+  }, [activeTab, filteredByJob]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {
-      all: applications.length,
+      all: filteredByJob.length,
       pending: 0,
       viewed: 0,
       interview: 0,
       rejected: 0,
       hired: 0,
     };
-    applications.forEach((app) => {
+    filteredByJob.forEach((app) => {
       counts[app.status] = (counts[app.status] || 0) + 1;
     });
     return counts;
-  }, [applications]);
+  }, [filteredByJob]);
 
   const handleView = (id: string) => {
     updateApplicationStatus(id, 'viewed');
     Taro.showToast({ title: '已标记为已查看', icon: 'success' });
   };
 
-  const handleInterview = (id: string) => {
-    updateApplicationStatus(id, 'interview');
+  const handleInterview = (app: any) => {
+    updateApplicationStatus(app.id, 'interview');
+
+    addInterview({
+      jobId: '',
+      jobTitle: app.jobTitle,
+      companyName: mockUserProfile.companyName,
+      companyLogo: mockUserProfile.companyLogo,
+      applicantName: app.applicantName,
+      applicantAvatar: app.applicantAvatar,
+      time: '待定，请与候选人沟通',
+      location: '待确认',
+      interviewer: 'HR 面试官',
+      status: 'pending',
+      notes: '邀请面试',
+    });
+
     Taro.showToast({ title: '已发送面试邀请', icon: 'success' });
   };
 
@@ -85,142 +115,141 @@ const ApplicationsPage: React.FC = () => {
     });
   };
 
-  const handleCardTap = (id: string, status: string) => {
-    if (status === 'pending') {
-      handleView(id);
-    }
-  };
-
   useDidShow(() => {
     // 页面显示时刷新
   });
 
-  const tabs: StatusType[] = ['all', 'pending', 'viewed', 'interview', 'rejected', 'hired'];
+  const renderActionButtons = (app: any) => {
+    switch (app.status) {
+      case 'pending':
+        return (
+          <>
+            <View
+              className={classnames(styles.actionBtn, styles.btnView)}
+              onClick={() => handleView(app.id)}
+            >
+              <Text className={styles.actionBtnText}>已查看</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnInterview)}
+              onClick={() => handleInterview(app)}
+            >
+              <Text className={styles.actionBtnText}>邀面</Text>
+            </View>
+          </>
+        );
+      case 'viewed':
+        return (
+          <>
+            <View
+              className={classnames(styles.actionBtn, styles.btnInterview)}
+              onClick={() => handleInterview(app)}
+            >
+              <Text className={styles.actionBtnText}>邀面</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnReject)}
+              onClick={() => handleReject(app.id)}
+            >
+              <Text className={styles.actionBtnText}>淘汰</Text>
+            </View>
+          </>
+        );
+      case 'interview':
+        return (
+          <>
+            <View
+              className={classnames(styles.actionBtn, styles.btnHire)}
+              onClick={() => handleHire(app.id)}
+            >
+              <Text className={styles.actionBtnText}>录用</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnReject)}
+              onClick={() => handleReject(app.id)}
+            >
+              <Text className={styles.actionBtnText}>淘汰</Text>
+            </View>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <View className={styles.container}>
+      <View className={styles.header}>
+        <Text className={styles.title}>投递管理</Text>
+        <View className={styles.jobFilter}>
+          <Text className={styles.jobFilterLabel}>职位筛选：</Text>
+          <View className={styles.jobSelect} onClick={() => {
+            const jobNames = ['全部职位', ...companyJobs.map(j => j.title)];
+            Taro.showActionSheet({
+              itemList: jobNames,
+            }).then((res) => {
+              if (res.tapIndex === 0) {
+                setSelectedJob('all');
+              } else {
+                setSelectedJob(companyJobs[res.tapIndex - 1].title);
+              }
+            }).catch(() => {});
+          }}>
+            <Text className={styles.jobSelectText}>
+              {selectedJob === 'all' ? '全部职位' : selectedJob}
+            </Text>
+            <Text className={styles.jobSelectArrow}>▼</Text>
+          </View>
+        </View>
+      </View>
+
       <View className={styles.tabBar}>
-        {tabs.map((tab) => (
+        {(Object.keys(statusLabels) as StatusType[]).map((tab) => (
           <View
             key={tab}
-            className={classnames(
-              styles.tabItem,
-              activeTab === tab && styles.tabActive
-            )}
+            className={classnames(styles.tabItem, activeTab === tab && styles.tabActive)}
             onClick={() => setActiveTab(tab)}
           >
             <Text className={styles.tabText}>
-              {statusLabels[tab]}
-              <Text className={styles.tabCount}>({statusCounts[tab] || 0})</Text>
+              {statusLabels[tab]} ({statusCounts[tab]})
             </Text>
           </View>
         ))}
       </View>
 
       {filteredApplications.length === 0 ? (
-        <EmptyState title="暂无数据" description="还没有相关投递记录~" />
+        <EmptyState text="暂无相关投递记录" />
       ) : (
-        <ScrollView className={styles.scrollView} scrollY>
-          <View className={styles.applicantList}>
-            {filteredApplications.map((app) => (
-              <View
-                key={app.id}
-                className={styles.applicantCard}
-                onClick={() => handleCardTap(app.id, app.status)}
-              >
-                <View className={styles.cardHeader}>
-                  <Image
-                    className={styles.applicantAvatar}
-                    src={app.applicantAvatar}
-                    mode="aspectFill"
-                  />
-                  <View className={styles.applicantInfo}>
-                    <Text className={styles.applicantName}>{app.applicantName}</Text>
-                    <Text className={styles.appliedJob}>应聘：{app.jobTitle}</Text>
-                  </View>
-                  <View
-                    className={classnames(
-                      styles.statusBadge,
-                      styles[statusStyles[app.status] || 'statusPending']
-                    )}
-                  >
-                    <Text className={styles.statusText}>
-                      {statusLabels[app.status]}
-                    </Text>
-                  </View>
+        <ScrollView scrollY className={styles.listArea}>
+          {filteredApplications.map((app) => (
+            <View key={app.id} className={styles.card}>
+              <View className={styles.cardHeader}>
+                <Image
+                  className={styles.avatar}
+                  src={app.applicantAvatar}
+                  mode="aspectFill"
+                />
+                <View className={styles.applicantInfo}>
+                  <Text className={styles.applicantName}>{app.applicantName}</Text>
+                  <Text className={styles.jobTitle}>{app.jobTitle}</Text>
                 </View>
-
-                <View className={styles.cardFooter}>
-                  <Text className={styles.appliedTime}>投递时间：{app.appliedAt}</Text>
-                  <View className={styles.actionButtons} onClick={(e) => e.stopPropagation()}>
-                    {app.status === 'pending' && (
-                      <>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnDanger)}
-                          onClick={() => handleReject(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>淘汰</Text>
-                        </View>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnSuccess)}
-                          onClick={() => handleInterview(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>邀面</Text>
-                        </View>
-                      </>
-                    )}
-                    {app.status === 'viewed' && (
-                      <>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnDanger)}
-                          onClick={() => handleReject(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>淘汰</Text>
-                        </View>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnSuccess)}
-                          onClick={() => handleInterview(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>邀面</Text>
-                        </View>
-                      </>
-                    )}
-                    {app.status === 'interview' && (
-                      <>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnDanger)}
-                          onClick={() => handleReject(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>淘汰</Text>
-                        </View>
-                        <View
-                          className={classnames(styles.actionBtn, styles.actionBtnPrimary)}
-                          onClick={() => handleHire(app.id)}
-                        >
-                          <Text className={styles.actionBtnText}>录用</Text>
-                        </View>
-                      </>
-                    )}
-                    {app.status === 'rejected' && (
-                      <View
-                        className={classnames(styles.actionBtn, styles.actionBtnPrimary)}
-                        onClick={() => handleInterview(app.id)}
-                      >
-                        <Text className={styles.actionBtnText}>重新邀面</Text>
-                      </View>
-                    )}
-                    {app.status === 'hired' && (
-                      <View
-                        className={classnames(styles.actionBtn, styles.actionBtnSuccess)}
-                      >
-                        <Text className={styles.actionBtnText}>已录用</Text>
-                      </View>
-                    )}
-                  </View>
+                <View
+                  className={classnames(
+                    styles.statusBadge,
+                    styles[statusStyles[app.status]]
+                  )}
+                >
+                  <Text className={styles.statusText}>{statusLabels[app.status]}</Text>
                 </View>
               </View>
-            ))}
-          </View>
+              <View className={styles.cardFooter}>
+                <Text className={styles.applyTime}>投递时间：{app.appliedAt}</Text>
+                <View className={styles.actionRow}>
+                  {renderActionButtons(app)}
+                </View>
+              </View>
+            </View>
+          ))}
         </ScrollView>
       )}
     </View>

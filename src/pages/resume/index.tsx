@@ -12,7 +12,7 @@ const ResumePage: React.FC = () => {
   const [previewAttachment, setPreviewAttachment] = useState<AttachmentItem | null>(null);
 
   useDidShow(() => {
-    // 页面显示时自动刷新
+    // 页面显示时自动刷新 - useResumeStore 响应式，无需手动刷新
   });
 
   const handleEdit = () => {
@@ -113,12 +113,12 @@ const ResumePage: React.FC = () => {
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
           </View>
-          {resume.workExperience.length === 0 ? (
+          {resume.workExperiences.length === 0 ? (
             <View className={styles.emptyTip}>
               <Text className={styles.emptyTipText}>还没有添加工作经历~</Text>
             </View>
           ) : (
-            resume.workExperience.map((exp) => (
+            resume.workExperiences.map((exp) => (
               <View key={exp.id} className={styles.experienceItem}>
                 <View className={styles.experienceHeader}>
                   <Text className={styles.experienceCompany}>{exp.company}</Text>
@@ -138,7 +138,7 @@ const ResumePage: React.FC = () => {
         <View className={styles.section}>
           <View className={styles.sectionHeader}>
             <View className={styles.sectionTitleRow}>
-              <Text className={styles.sectionIcon}>�</Text>
+              <Text className={styles.sectionIcon}>🔧</Text>
               <Text className={styles.sectionTitle}>专业技能</Text>
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
@@ -149,10 +149,9 @@ const ResumePage: React.FC = () => {
             </View>
           ) : (
             <View className={styles.skillsList}>
-              {resume.skills.map((skill) => (
-                <View key={skill.id} className={styles.skillTag}>
-                  <Text className={styles.skillText}>{skill.name}</Text>
-                  <Text className={styles.skillLevel}>{skill.level}</Text>
+              {resume.skills.map((skill, index) => (
+                <View key={`${skill}-${index}`} className={styles.skillTag}>
+                  <Text className={styles.skillText}>{skill}</Text>
                 </View>
               ))}
             </View>
@@ -167,36 +166,36 @@ const ResumePage: React.FC = () => {
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
           </View>
-          {resume.expectation ? (
-            <View className={styles.expectationBox}>
-              <View className={styles.expectationRow}>
-                <Text className={styles.expectationLabel}>期望职位</Text>
-                <Text className={styles.expectationValue}>
-                  {resume.expectation.position}
-                </Text>
-              </View>
-              <View className={styles.expectationRow}>
-                <Text className={styles.expectationLabel}>期望城市</Text>
-                <Text className={styles.expectationValue}>
-                  {resume.expectation.city}
-                </Text>
-              </View>
-              <View className={styles.expectationRow}>
-                <Text className={styles.expectationLabel}>期望薪资</Text>
-                <Text className={styles.expectationValue}>
-                  {resume.expectation.salaryMin}K - {resume.expectation.salaryMax}K
-                </Text>
-              </View>
-              <View className={styles.expectationRow}>
-                <Text className={styles.expectationLabel}>工作类型</Text>
-                <Text className={styles.expectationValue}>
-                  {resume.expectation.type}
-                </Text>
-              </View>
-            </View>
-          ) : (
+          {!resume.expectedPosition && !resume.expectedSalary && !resume.expectedLocation ? (
             <View className={styles.emptyTip}>
               <Text className={styles.emptyTipText}>还没有添加求职期望~</Text>
+            </View>
+          ) : (
+            <View className={styles.expectationBox}>
+              {resume.expectedPosition && (
+                <View className={styles.expectationRow}>
+                  <Text className={styles.expectationLabel}>期望职位</Text>
+                  <Text className={styles.expectationValue}>
+                    {resume.expectedPosition}
+                  </Text>
+                </View>
+              )}
+              {resume.expectedLocation && (
+                <View className={styles.expectationRow}>
+                  <Text className={styles.expectationLabel}>期望城市</Text>
+                  <Text className={styles.expectationValue}>
+                    {resume.expectedLocation}
+                  </Text>
+                </View>
+              )}
+              {resume.expectedSalary && (
+                <View className={styles.expectationRow}>
+                  <Text className={styles.expectationLabel}>期望薪资</Text>
+                  <Text className={styles.expectationValue}>
+                    {resume.expectedSalary}
+                  </Text>
+                </View>
+              )}
             </View>
           )}
         </View>

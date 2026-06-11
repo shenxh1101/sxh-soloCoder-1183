@@ -16,6 +16,8 @@ export interface Job {
   publishedAt: string;
   isBookmarked: boolean;
   isApplied: boolean;
+  status?: 'online' | 'offline';
+  welfare?: string[];
 }
 
 export interface WorkExperience {
@@ -69,21 +71,26 @@ export interface ChatMessage {
   content: string;
   type: 'text' | 'job_card';
   jobCard?: Job;
+  jobApplied?: boolean;
   timestamp: string;
   isRead: boolean;
 }
 
 export interface Interview {
   id: string;
+  jobId?: string;
   jobTitle: string;
   companyName: string;
   companyLogo: string;
+  applicantName?: string;
+  applicantAvatar?: string;
   time: string;
   location: string;
   status: 'pending' | 'confirmed' | 'rescheduled' | 'completed' | 'cancelled';
   result?: 'passed' | 'failed' | 'pending';
   notes: string;
   interviewer: string;
+  reminded?: boolean;
 }
 
 export type UserRole = 'seeker' | 'company';

@@ -12,7 +12,8 @@ export default defineAppConfig({
     'pages/publish-job/index',
     'pages/applications/index',
     'pages/privacy-settings/index',
-    'pages/blacklist/index'
+    'pages/blacklist/index',
+    'pages/my-jobs/index'
   ],
   window: {
     backgroundTextStyle: 'light',

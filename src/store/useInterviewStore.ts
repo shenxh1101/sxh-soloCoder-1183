@@ -10,6 +10,7 @@ interface InterviewState {
   recordResult: (id: string, result: 'passed' | 'failed' | 'pending', notes?: string) => void;
   cancelInterview: (id: string) => void;
   updateInterview: (id: string, updates: Partial<Interview>) => void;
+  addInterview: (interview: Omit<Interview, 'id'>) => void;
   getUpcomingInterviews: () => Interview[];
   getCompletedInterviews: () => Interview[];
 }
@@ -60,6 +61,16 @@ export const useInterviewStore = create<InterviewState>((set, get) => ({
       interviews: state.interviews.map((i) =>
         i.id === id ? { ...i, ...updates } : i
       ),
+    }));
+  },
+
+  addInterview: (interview) => {
+    const newInterview: Interview = {
+      ...interview,
+      id: Date.now().toString(),
+    };
+    set((state) => ({
+      interviews: [newInterview, ...state.interviews],
     }));
   },
 
