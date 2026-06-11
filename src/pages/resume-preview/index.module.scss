@@ -3,19 +3,249 @@
 .container {
   min-height: 100vh;
   background: $color-bg-page;
-  padding: $spacing-lg;
+  padding-bottom: 120rpx;
 }
 
-.title {
-  font-size: $font-size-lg;
+.resumePaper {
+  margin: $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-xl $spacing-lg;
+  color: $color-text-white;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: $radius-round;
+  margin-right: $spacing-lg;
+  flex-shrink: 0;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  margin-bottom: $spacing-xs;
+}
+
+.meta {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+}
+
+.metaIcon {
+  font-size: $font-size-sm;
+  margin-right: 6rpx;
+}
+
+.section {
+  padding: $spacing-lg;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
-  text-align: center;
   margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+  padding-bottom: $spacing-sm;
+  border-bottom: 2rpx solid $color-primary;
+  padding-left: 0;
+  width: fit-content;
 }
 
-.description {
+.sectionIcon {
   font-size: $font-size-md;
+  margin-right: $spacing-sm;
+}
+
+.expectGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md $spacing-lg;
+}
+
+.expectItem {
+  display: flex;
+  align-items: center;
+  min-width: 200rpx;
+}
+
+.expectLabel {
+  font-size: $font-size-sm;
   color: $color-text-tertiary;
-  text-align: center;
+  margin-right: $spacing-xs;
+}
+
+.expectValue {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.experienceItem {
+  margin-bottom: $spacing-md;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.expHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-xs;
+}
+
+.expCompany {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.expDate {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+}
+
+.expPosition {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-xs;
+}
+
+.expDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.8;
+}
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.skillTag {
+  background: $color-tag-bg;
+  border-radius: $radius-xs;
+  padding: 8rpx 20rpx;
+}
+
+.skillTagText {
+  font-size: $font-size-sm;
+  color: $color-tag-text;
+  white-space: nowrap;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.attachmentIcon {
+  font-size: $font-size-lg;
+  margin-right: $spacing-sm;
+}
+
+.attachmentName {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.attachmentSize {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-left: $spacing-sm;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: $color-bg-card;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+}
+
+.shareBtn {
+  @include flex-center;
+  flex-direction: column;
+  width: 80rpx;
+  flex-shrink: 0;
+}
+
+.shareBtnIcon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.shareBtnText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.exportBtn {
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  @include flex-center;
+  @include button-reset;
+}
+
+.exportBtnText {
+  font-size: $font-size-md;
+  color: $color-text-white;
+  font-weight: $font-weight-semibold;
 }

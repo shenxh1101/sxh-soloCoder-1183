@@ -260,6 +260,16 @@
   margin-left: $spacing-sm;
 }
 
+.emptyTip {
+  padding: $spacing-md 0;
+  text-align: center;
+}
+
+.emptyTipText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
 .bottomBar {
   position: fixed;
   bottom: 0;

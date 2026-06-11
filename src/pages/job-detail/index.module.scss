@@ -3,19 +3,230 @@
 .container {
   min-height: 100vh;
   background: $color-bg-page;
-  padding: $spacing-lg;
+  padding-bottom: 140rpx;
+}
+
+.headerSection {
+  background: $color-bg-card;
+  padding: $spacing-xl $spacing-lg;
+  border-bottom-left-radius: $radius-lg;
+  border-bottom-right-radius: $radius-lg;
+  box-shadow: $shadow-card;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
 }
 
 .title {
-  font-size: $font-size-lg;
+  font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
-  text-align: center;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.bookmarkBtn {
+  padding: $spacing-xs $spacing-sm;
+  margin-left: $spacing-md;
+  flex-shrink: 0;
+}
+
+.bookmarkIcon {
+  font-size: 48rpx;
+  color: $color-text-tertiary;
+}
+
+.bookmarked {
+  .bookmarkIcon {
+    color: $color-salary;
+  }
+}
+
+.salary {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-salary;
   margin-bottom: $spacing-md;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.companyLogo {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-md;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.companyName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.infoTags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.infoTag {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.section {
+  margin: $spacing-md $spacing-lg 0;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+}
+
+.sectionIcon {
+  font-size: $font-size-md;
+  margin-right: $spacing-sm;
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.tag {
+  background: $color-tag-bg;
+  border-radius: $radius-xs;
+  padding: 8rpx 20rpx;
+}
+
+.tagText {
+  font-size: $font-size-sm;
+  color: $color-tag-text;
+  white-space: nowrap;
 }
 
 .description {
   font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: 1.8;
+}
+
+.requirements {
+  padding-left: 0;
+  margin: 0;
+}
+
+.requirementItem {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: 2;
+  list-style: none;
+  position: relative;
+  padding-left: 32rpx;
+}
+
+.requirementItem::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: $color-success;
+  font-weight: $font-weight-bold;
+}
+
+.benefitItem {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: 2;
+  list-style: none;
+  position: relative;
+  padding-left: 32rpx;
+}
+
+.benefitItem::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  color: $color-warning;
+  font-size: $font-size-sm;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: $color-bg-card;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+}
+
+.iconBtn {
+  @include flex-center;
+  flex-direction: column;
+  width: 80rpx;
+  flex-shrink: 0;
+}
+
+.iconBtnIcon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.iconBtnText {
+  font-size: $font-size-xs;
   color: $color-text-tertiary;
-  text-align: center;
+}
+
+.applyBtn {
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  @include flex-center;
+  @include button-reset;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.applyBtnApplied {
+  background: $color-bg-hover;
+}
+
+.applyBtnText {
+  font-size: $font-size-md;
+  color: $color-text-white;
+  font-weight: $font-weight-semibold;
+}
+
+.applyBtnTextApplied {
+  color: $color-text-tertiary;
 }

@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import classnames from 'classnames';
 import JobCard from '@/components/JobCard';
 import EmptyState from '@/components/EmptyState';
-import { mockJobs, salaryRanges, locationOptions, typeOptions } from '@/data/jobs';
+import { useJobStore } from '@/store/useJobStore';
+import { salaryRanges, locationOptions, typeOptions } from '@/data/jobs';
 import type { Job } from '@/types';
 import styles from './index.module.scss';
 
@@ -12,13 +13,14 @@ type FilterKey = 'salary' | 'location' | 'type';
 
 const JobsPage: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [jobs, setJobs] = useState<Job[]>(mockJobs);
   const [activeFilter, setActiveFilter] = useState<FilterKey | null>(null);
   const [filterValues, setFilterValues] = useState({
     salary: '',
     location: '',
     type: '',
   });
+
+  const { jobs, toggleBookmark } = useJobStore();
 
   const filterConfigs: { key: FilterKey; label: string; options: typeof salaryRanges }[] = [
     { key: 'salary', label: '薪资', options: salaryRanges },
@@ -53,20 +55,14 @@ const JobsPage: React.FC = () => {
 
   const handleBookmark = useCallback(
     (id: string) => {
-      setJobs((prev) =>
-        prev.map((job) =>
-          job.id === id ? { ...job, isBookmarked: !job.isBookmarked } : job
-        )
-      );
       const job = jobs.find((j) => j.id === id);
-      if (job) {
-        Taro.showToast({
-          title: job.isBookmarked ? '已取消收藏' : '已收藏',
-          icon: 'none',
-        });
-      }
+      toggleBookmark(id);
+      Taro.showToast({
+        title: job?.isBookmarked ? '已取消收藏' : '已收藏',
+        icon: 'none',
+      });
     },
-    [jobs]
+    [jobs, toggleBookmark]
   );
 
   const handleTapJob = useCallback((id: string) => {
@@ -95,6 +91,10 @@ const JobsPage: React.FC = () => {
     },
     [filterValues]
   );
+
+  useDidShow(() => {
+    // 页面显示时自动刷新数据
+  });
 
   return (
     <View className={styles.container}>
@@ -177,7 +177,7 @@ const JobsPage: React.FC = () => {
           <EmptyState title="暂无匹配职位" description="试试调整筛选条件" />
         ) : (
           <ScrollView className={styles.scrollView} scrollY>
-            {filteredJobs.map((job) => (
+            {filteredJobs.map((job: Job) => (
               <JobCard
                 key={job.id}
                 job={job}

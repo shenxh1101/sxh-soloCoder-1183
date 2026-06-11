@@ -3,19 +3,110 @@
 .container {
   min-height: 100vh;
   background: $color-bg-page;
-  padding: $spacing-lg;
+  padding-bottom: $spacing-lg;
 }
 
-.title {
-  font-size: $font-size-lg;
-  font-weight: $font-weight-semibold;
+.section {
+  background: $color-bg-card;
+  margin: $spacing-md $spacing-lg;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  padding: $spacing-md $spacing-lg $spacing-sm;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1rpx solid $color-divider;
+  transition: all $transition-base;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.settingInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.settingLabel {
+  font-size: $font-size-md;
   color: $color-text-primary;
-  text-align: center;
-  margin-bottom: $spacing-md;
+  display: block;
+  margin-bottom: 4rpx;
 }
 
-.description {
+.settingDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  display: block;
+}
+
+.switch {
+  width: 88rpx;
+  height: 48rpx;
+  border-radius: 48rpx;
+  background: $color-bg-hover;
+  position: relative;
+  transition: all $transition-base;
+  flex-shrink: 0;
+}
+
+.switchActive {
+  background: $color-primary;
+}
+
+.switchDot {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-round;
+  background: $color-bg-card;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all $transition-base;
+}
+
+.switchActive .switchDot {
+  left: 44rpx;
+}
+
+.settingArrow {
   font-size: $font-size-md;
   color: $color-text-tertiary;
-  text-align: center;
+  margin-left: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.tipBox {
+  margin: $spacing-lg $spacing-lg 0;
+  padding: $spacing-md;
+  background: $color-tag-bg;
+  border-radius: $radius-md;
+}
+
+.tipText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
+.tipTitle {
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+  display: block;
 }

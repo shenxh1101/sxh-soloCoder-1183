@@ -1,62 +1,65 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import classnames from 'classnames';
 import InterviewCard from '@/components/InterviewCard';
 import EmptyState from '@/components/EmptyState';
-import { mockInterviews } from '@/data/interviews';
+import { useInterviewStore } from '@/store/useInterviewStore';
 import styles from './index.module.scss';
 
 type TabType = 'upcoming' | 'completed' | 'all';
 
 const InterviewsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('upcoming');
+  const { interviews, confirmInterview, rescheduleInterview, recordResult, getUpcomingInterviews, getCompletedInterviews } = useInterviewStore();
 
   const filteredInterviews = useMemo(() => {
     switch (activeTab) {
       case 'upcoming':
-        return mockInterviews.filter(
-          (i) => i.status === 'pending' || i.status === 'confirmed' || i.status === 'rescheduled'
-        );
+        return getUpcomingInterviews();
       case 'completed':
-        return mockInterviews.filter(
-          (i) => i.status === 'completed' || i.status === 'cancelled'
-        );
+        return getCompletedInterviews();
       default:
-        return mockInterviews;
+        return interviews;
     }
-  }, [activeTab]);
+  }, [activeTab, interviews, getUpcomingInterviews, getCompletedInterviews]);
 
-  const upcomingCount = mockInterviews.filter(
-    (i) => i.status === 'pending' || i.status === 'confirmed' || i.status === 'rescheduled'
-  ).length;
-  const completedCount = mockInterviews.filter(
-    (i) => i.status === 'completed' || i.status === 'cancelled'
-  ).length;
+  const upcomingCount = getUpcomingInterviews().length;
+  const completedCount = getCompletedInterviews().length;
 
   const handleAction = (id: string, action: string) => {
-    console.info('[Interviews]', 'Action:', action, 'Interview ID:', id);
     switch (action) {
       case 'confirm':
+        confirmInterview(id);
         Taro.showToast({ title: '已确认面试', icon: 'success' });
         break;
       case 'reschedule':
-        Taro.showToast({ title: '已申请改期', icon: 'none' });
+        Taro.showActionSheet({
+          itemList: ['明天上午 10:00', '明天下午 14:00', '后天上午 10:00', '后天下午 14:00'],
+        }).then((res) => {
+          const times = ['明天上午 10:00', '明天下午 14:00', '后天上午 10:00', '后天下午 14:00'];
+          rescheduleInterview(id, times[res.tapIndex], '候选人申请改期');
+          Taro.showToast({ title: '改期申请已提交', icon: 'success' });
+        }).catch(() => {});
         break;
       case 'record':
         Taro.showActionSheet({
-          itemList: ['面试通过', '面试未通过'],
+          itemList: ['面试通过', '面试未通过', '待定'],
         }).then((res) => {
-          const resultText = res.tapIndex === 0 ? '通过' : '未通过';
-          Taro.showToast({ title: `已记录结果：${resultText}`, icon: 'none' });
-        }).catch(() => {
-          console.info('[Interviews]', 'Record action cancelled');
-        });
+          const results = ['passed', 'failed', 'pending'];
+          const resultTexts = ['通过', '未通过', '待定'];
+          recordResult(id, results[res.tapIndex] as any);
+          Taro.showToast({ title: `已记录：${resultTexts[res.tapIndex]}`, icon: 'success' });
+        }).catch(() => {});
         break;
       default:
         break;
     }
   };
+
+  useDidShow(() => {
+    // 页面显示时自动刷新
+  });
 
   return (
     <View className={styles.container}>

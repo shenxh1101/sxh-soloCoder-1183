@@ -3,19 +3,211 @@
 .container {
   min-height: 100vh;
   background: $color-bg-page;
-  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
 }
 
-.title {
-  font-size: $font-size-lg;
+.tabBar {
+  display: flex;
+  background: $color-bg-card;
+  padding: 0 $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.tabItem {
+  flex: 1;
+  padding: $spacing-md 0;
+  text-align: center;
+  position: relative;
+  transition: all $transition-base;
+}
+
+.tabActive {
+  .tabText {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48rpx;
+    height: 6rpx;
+    background: $color-primary;
+    border-radius: 3rpx;
+  }
+}
+
+.tabText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.tabCount {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-left: 4rpx;
+}
+
+.scrollView {
+  flex: 1;
+}
+
+.applicantList {
+  padding: $spacing-md $spacing-lg;
+}
+
+.applicantCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.applicantAvatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-round;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.applicantInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.applicantName {
+  font-size: $font-size-md;
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
-  text-align: center;
-  margin-bottom: $spacing-md;
+  margin-bottom: 4rpx;
+  display: block;
 }
 
-.description {
-  font-size: $font-size-md;
+.appliedJob {
+  font-size: $font-size-sm;
   color: $color-text-tertiary;
-  text-align: center;
+  @include text-ellipsis;
+  display: block;
+}
+
+.statusBadge {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-xs;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.statusPending {
+  background: $color-tag-bg;
+  .statusText {
+    color: $color-salary;
+  }
+}
+
+.statusViewed {
+  background: $color-tag-bg;
+  .statusText {
+    color: $color-primary;
+  }
+}
+
+.statusInterview {
+  background: $color-tag-bg;
+  .statusText {
+    color: $color-success;
+  }
+}
+
+.statusRejected {
+  background: $color-tag-bg;
+  .statusText {
+    color: $color-text-tertiary;
+  }
+}
+
+.statusHired {
+  background: $color-tag-bg;
+  .statusText {
+    color: $color-primary;
+  }
+}
+
+.statusText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-sm;
+  border-top: 1rpx solid $color-divider;
+  margin-top: $spacing-sm;
+}
+
+.appliedTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.actionButtons {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.actionBtn {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-xs;
+  background: $color-bg-hover;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.actionBtnPrimary {
+  background: $color-primary-light;
+  .actionBtnText {
+    color: $color-primary;
+  }
+}
+
+.actionBtnSuccess {
+  background: rgba($color-success, 0.1);
+  .actionBtnText {
+    color: $color-success;
+  }
+}
+
+.actionBtnDanger {
+  background: rgba($color-error, 0.1);
+  .actionBtnText {
+    color: $color-error;
+  }
+}
+
+.actionBtnText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
 }

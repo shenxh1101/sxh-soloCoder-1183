@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '简历编辑'
+  navigationBarTitleText: '编辑简历'
 })

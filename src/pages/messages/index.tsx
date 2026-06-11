@@ -1,22 +1,31 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import classnames from 'classnames';
 import EmptyState from '@/components/EmptyState';
-import { mockChats } from '@/data/messages';
+import { useMessageStore } from '@/store/useMessageStore';
 import styles from './index.module.scss';
 
 const MessagesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
+  const { chats, getTotalUnread } = useMessageStore();
 
   const filteredChats = useMemo(() => {
     if (activeTab === 'unread') {
-      return mockChats.filter((chat) => chat.unreadCount > 0);
+      return chats.filter((chat) => chat.unreadCount > 0);
     }
-    return mockChats;
-  }, [activeTab]);
+    return chats;
+  }, [activeTab, chats]);
 
-  const totalUnread = mockChats.reduce((sum, chat) => sum + chat.unreadCount, 0);
+  const totalUnread = getTotalUnread();
+
+  useDidShow(() => {
+    // 页面显示时自动刷新
+  });
+
+  const handleChatTap = (chatId: string) => {
+    Taro.navigateTo({ url: `/pages/chat-detail/index?id=${chatId}` });
+  };
 
   return (
     <View className={styles.container}>
@@ -51,9 +60,7 @@ const MessagesPage: React.FC = () => {
               <View
                 key={chat.id}
                 className={styles.chatItem}
-                onClick={() =>
-                  Taro.navigateTo({ url: `/pages/chat-detail/index?id=${chat.id}` })
-                }
+                onClick={() => handleChatTap(chat.id)}
               >
                 <Image className={styles.chatAvatar} src={chat.avatar} mode="aspectFill" />
                 <View className={styles.chatInfo}>
