@@ -9,6 +9,7 @@ interface InterviewState {
   rescheduleInterview: (id: string, newTime: string, reason?: string) => void;
   recordResult: (id: string, result: 'passed' | 'failed' | 'pending', notes?: string) => void;
   cancelInterview: (id: string) => void;
+  updateInterview: (id: string, updates: Partial<Interview>) => void;
   getUpcomingInterviews: () => Interview[];
   getCompletedInterviews: () => Interview[];
 }
@@ -50,6 +51,14 @@ export const useInterviewStore = create<InterviewState>((set, get) => ({
     set((state) => ({
       interviews: state.interviews.map((i) =>
         i.id === id ? { ...i, status: 'cancelled' } : i
+      ),
+    }));
+  },
+
+  updateInterview: (id: string, updates: Partial<Interview>) => {
+    set((state) => ({
+      interviews: state.interviews.map((i) =>
+        i.id === id ? { ...i, ...updates } : i
       ),
     }));
   },

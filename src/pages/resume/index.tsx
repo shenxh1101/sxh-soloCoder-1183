@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
 import { useResumeStore } from '@/store/useResumeStore';
+import type { AttachmentItem } from '@/types';
 import styles from './index.module.scss';
 
 const ResumePage: React.FC = () => {
   const { resume, calculateCompletion } = useResumeStore();
   const completion = calculateCompletion();
+  const [showAttachmentPreview, setShowAttachmentPreview] = useState<string | null>(null);
+  const [previewAttachment, setPreviewAttachment] = useState<AttachmentItem | null>(null);
 
   useDidShow(() => {
     // 页面显示时自动刷新
@@ -18,6 +21,34 @@ const ResumePage: React.FC = () => {
 
   const handlePreview = () => {
     Taro.navigateTo({ url: '/pages/resume-preview/index' });
+  };
+
+  const handlePreviewAttachment = (att: AttachmentItem) => {
+    setPreviewAttachment(att);
+    setShowAttachmentPreview(att.id);
+  };
+
+  const handleCloseAttachmentPreview = () => {
+    setShowAttachmentPreview(null);
+    setPreviewAttachment(null);
+  };
+
+  const getFileTypeLabel = (name: string) => {
+    const ext = name.split('.').pop()?.toLowerCase() || '';
+    const map: Record<string, string> = {
+      pdf: 'PDF 文档',
+      doc: 'Word 文档',
+      docx: 'Word 文档',
+      xls: 'Excel 表格',
+      xlsx: 'Excel 表格',
+      ppt: 'PPT 演示',
+      pptx: 'PPT 演示',
+      jpg: 'JPG 图片',
+      jpeg: 'JPG 图片',
+      png: 'PNG 图片',
+      txt: '文本文件',
+    };
+    return map[ext] || `${ext.toUpperCase()} 文件`;
   };
 
   return (
@@ -82,21 +113,23 @@ const ResumePage: React.FC = () => {
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
           </View>
-          {resume.workExperiences.length === 0 ? (
+          {resume.workExperience.length === 0 ? (
             <View className={styles.emptyTip}>
-              <Text className={styles.emptyTipText}>还没有工作经历，快去添加吧~</Text>
+              <Text className={styles.emptyTipText}>还没有添加工作经历~</Text>
             </View>
           ) : (
-            resume.workExperiences.map((exp) => (
+            resume.workExperience.map((exp) => (
               <View key={exp.id} className={styles.experienceItem}>
-                <View className={styles.expHeader}>
-                  <Text className={styles.expCompany}>{exp.company}</Text>
-                  <Text className={styles.expDate}>
+                <View className={styles.experienceHeader}>
+                  <Text className={styles.experienceCompany}>{exp.company}</Text>
+                  <Text className={styles.experienceDate}>
                     {exp.startDate} - {exp.endDate}
                   </Text>
                 </View>
-                <Text className={styles.expPosition}>{exp.position}</Text>
-                <Text className={styles.expDesc}>{exp.description}</Text>
+                <Text className={styles.experiencePosition}>{exp.position}</Text>
+                <Text className={styles.experienceDescription}>
+                  {exp.description}
+                </Text>
               </View>
             ))
           )}
@@ -105,7 +138,7 @@ const ResumePage: React.FC = () => {
         <View className={styles.section}>
           <View className={styles.sectionHeader}>
             <View className={styles.sectionTitleRow}>
-              <Text className={styles.sectionIcon}>🛠</Text>
+              <Text className={styles.sectionIcon}>�</Text>
               <Text className={styles.sectionTitle}>专业技能</Text>
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
@@ -115,10 +148,11 @@ const ResumePage: React.FC = () => {
               <Text className={styles.emptyTipText}>还没有添加技能标签~</Text>
             </View>
           ) : (
-            <View className={styles.skillTags}>
+            <View className={styles.skillsList}>
               {resume.skills.map((skill) => (
-                <View key={skill} className={styles.skillTag}>
-                  <Text className={styles.skillTagText}>{skill}</Text>
+                <View key={skill.id} className={styles.skillTag}>
+                  <Text className={styles.skillText}>{skill.name}</Text>
+                  <Text className={styles.skillLevel}>{skill.level}</Text>
                 </View>
               ))}
             </View>
@@ -133,18 +167,38 @@ const ResumePage: React.FC = () => {
             </View>
             <Text className={styles.sectionEdit} onClick={handleEdit}>编辑</Text>
           </View>
-          <View className={styles.expectItem}>
-            <Text className={styles.expectLabel}>期望薪资</Text>
-            <Text className={styles.expectValue}>{resume.expectedSalary || '未填写'}</Text>
-          </View>
-          <View className={styles.expectItem}>
-            <Text className={styles.expectLabel}>期望职位</Text>
-            <Text className={styles.expectValue}>{resume.expectedPosition || '未填写'}</Text>
-          </View>
-          <View className={styles.expectItem}>
-            <Text className={styles.expectLabel}>期望地点</Text>
-            <Text className={styles.expectValue}>{resume.expectedLocation || '未填写'}</Text>
-          </View>
+          {resume.expectation ? (
+            <View className={styles.expectationBox}>
+              <View className={styles.expectationRow}>
+                <Text className={styles.expectationLabel}>期望职位</Text>
+                <Text className={styles.expectationValue}>
+                  {resume.expectation.position}
+                </Text>
+              </View>
+              <View className={styles.expectationRow}>
+                <Text className={styles.expectationLabel}>期望城市</Text>
+                <Text className={styles.expectationValue}>
+                  {resume.expectation.city}
+                </Text>
+              </View>
+              <View className={styles.expectationRow}>
+                <Text className={styles.expectationLabel}>期望薪资</Text>
+                <Text className={styles.expectationValue}>
+                  {resume.expectation.salaryMin}K - {resume.expectation.salaryMax}K
+                </Text>
+              </View>
+              <View className={styles.expectationRow}>
+                <Text className={styles.expectationLabel}>工作类型</Text>
+                <Text className={styles.expectationValue}>
+                  {resume.expectation.type}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View className={styles.emptyTip}>
+              <Text className={styles.emptyTipText}>还没有添加求职期望~</Text>
+            </View>
+          )}
         </View>
 
         <View className={styles.section}>
@@ -171,7 +225,7 @@ const ResumePage: React.FC = () => {
                     </Text>
                   </View>
                 </View>
-                <Text className={styles.attachmentAction} onClick={() => Taro.showToast({ title: '预览功能', icon: 'none' })}>预览</Text>
+                <Text className={styles.attachmentAction} onClick={() => handlePreviewAttachment(att)}>预览</Text>
               </View>
             ))
           )}
@@ -186,6 +240,43 @@ const ResumePage: React.FC = () => {
           <Text className={styles.previewBtnText}>预览简历</Text>
         </View>
       </View>
+
+      {showAttachmentPreview && previewAttachment && (
+        <View className={styles.previewModal} onClick={handleCloseAttachmentPreview}>
+          <View className={styles.previewModalContent} onClick={(e) => e.stopPropagation()}>
+            <View className={styles.previewModalHeader}>
+              <Text className={styles.previewModalTitle}>附件详情</Text>
+              <Text className={styles.previewModalClose} onClick={handleCloseAttachmentPreview}>×</Text>
+            </View>
+            <View className={styles.previewFileIcon}>
+              <Text style={{ fontSize: '120rpx' }}>📄</Text>
+            </View>
+            <View className={styles.previewFileInfo}>
+              <View className={styles.previewInfoRow}>
+                <Text className={styles.previewInfoLabel}>文件名称</Text>
+                <Text className={styles.previewInfoValue}>{previewAttachment.name}</Text>
+              </View>
+              <View className={styles.previewInfoRow}>
+                <Text className={styles.previewInfoLabel}>文件类型</Text>
+                <Text className={styles.previewInfoValue}>{getFileTypeLabel(previewAttachment.name)}</Text>
+              </View>
+              <View className={styles.previewInfoRow}>
+                <Text className={styles.previewInfoLabel}>文件大小</Text>
+                <Text className={styles.previewInfoValue}>{previewAttachment.size}</Text>
+              </View>
+              <View className={styles.previewInfoRow}>
+                <Text className={styles.previewInfoLabel}>上传时间</Text>
+                <Text className={styles.previewInfoValue}>{previewAttachment.uploadedAt}</Text>
+              </View>
+            </View>
+            <View className={styles.previewActions}>
+              <View className={styles.previewDownloadBtn} onClick={() => Taro.showToast({ title: '下载中...', icon: 'loading' })}>
+                <Text className={styles.previewDownloadBtnText}>下载文件</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

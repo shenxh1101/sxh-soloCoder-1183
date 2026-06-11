@@ -29,6 +29,19 @@ const InterviewsPage: React.FC = () => {
 
   const handleAction = (id: string, action: string) => {
     switch (action) {
+      case 'remind':
+        Taro.showModal({
+          title: '发送面试提醒',
+          content: '确认向候选人发送面试提醒通知？',
+          success: (r) => {
+            if (r.confirm) {
+              const { updateInterview } = useInterviewStore.getState();
+              updateInterview(id, { reminded: true });
+              Taro.showToast({ title: '提醒已发送', icon: 'success' });
+            }
+          }
+        });
+        break;
       case 'confirm':
         confirmInterview(id);
         Taro.showToast({ title: '已确认面试', icon: 'success' });

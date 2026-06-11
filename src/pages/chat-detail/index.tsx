@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { useMessageStore } from '@/store/useMessageStore';
 import { useJobStore } from '@/store/useJobStore';
 import { useUserStore } from '@/store/useUserStore';
+import { mockUserProfile } from '@/data/profile';
 import styles from './index.module.scss';
 
 const ChatDetailPage: React.FC = () => {
@@ -65,7 +66,10 @@ const ChatDetailPage: React.FC = () => {
     Taro.navigateTo({ url: `/pages/job-detail/index?id=${jobId}` });
   };
 
-  const myJobs = jobs.filter((j) => j.company === (chatInfo?.name?.split('·')[0] || ''));
+  const currentCompanyName = mockUserProfile.companyName;
+  const myJobs = role === 'company'
+    ? jobs.filter((j) => j.company === currentCompanyName)
+    : jobs.filter((j) => j.company === (chatInfo?.name?.split('·')[0] || chatInfo?.name || ''));
 
   return (
     <View className={styles.container}>

@@ -382,26 +382,46 @@ const ResumeEditPage: React.FC = () => {
       {showAttachmentPreview && (
         <View className={styles.modalMask} onClick={() => setShowAttachmentPreview(null)}>
           <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <Text className={styles.modalTitle}>附件预览</Text>
+            <Text className={styles.modalTitle}>附件详情</Text>
             {previewAttachment && (
               <>
-                <View style={{ display: 'flex', alignItems: 'center', marginBottom: '$spacing-md' }}>
-                  <Text style={{ fontSize: '80rpx', marginRight: '$spacing-md' }}>📄</Text>
-                  <View>
-                    <Text style={{ fontSize: '$font-size-md', color: '$color-text-primary', display: 'block', marginBottom: '$spacing-xs' }}>
+                <View style={{ textAlign: 'center', padding: '$spacing-md 0', background: '$color-bg-light', borderRadius: '$radius-md', marginBottom: '$spacing-md' }}>
+                  <Text style={{ fontSize: '120rpx' }}>📄</Text>
+                </View>
+                <View style={{ marginBottom: '$spacing-md' }}>
+                  <View style={{ display: 'flex', padding: '$spacing-sm 0', borderBottom: '1rpx solid $color-divider' }}>
+                    <Text style={{ width: '160rpx', fontSize: '$font-size-sm', color: '$color-text-tertiary' }}>文件名称</Text>
+                    <Text style={{ flex: 1, fontSize: '$font-size-sm', color: '$color-text-primary', wordBreak: 'break-all' }}>
                       {previewAttachment.name}
                     </Text>
-                    <Text style={{ fontSize: '$font-size-sm', color: '$color-text-tertiary' }}>
-                      {previewAttachment.size} · {previewAttachment.uploadedAt}
+                  </View>
+                  <View style={{ display: 'flex', padding: '$spacing-sm 0', borderBottom: '1rpx solid $color-divider' }}>
+                    <Text style={{ width: '160rpx', fontSize: '$font-size-sm', color: '$color-text-tertiary' }}>文件类型</Text>
+                    <Text style={{ flex: 1, fontSize: '$font-size-sm', color: '$color-text-primary' }}>
+                      {(() => {
+                        const ext = previewAttachment.name.split('.').pop()?.toLowerCase() || '';
+                        const map: Record<string, string> = {
+                          pdf: 'PDF 文档', doc: 'Word 文档', docx: 'Word 文档',
+                          xls: 'Excel 表格', xlsx: 'Excel 表格',
+                          ppt: 'PPT 演示', pptx: 'PPT 演示',
+                          jpg: 'JPG 图片', jpeg: 'JPG 图片', png: 'PNG 图片', txt: '文本文件',
+                        };
+                        return map[ext] || `${ext.toUpperCase()} 文件`;
+                      })()}
                     </Text>
                   </View>
-                </View>
-                <View style={{ padding: '$spacing-lg', background: '$color-bg-hover', borderRadius: '$radius-md', minHeight: '200rpx' }}>
-                  <Text style={{ fontSize: '$font-size-sm', color: '$color-text-secondary', textAlign: 'center', padding: '40rpx 0' }}>
-                    📄 附件内容预览区
-                    {'\n'}
-                    （此处为模拟预览，实际项目中可使用 PDF 预览组件）
-                  </Text>
+                  <View style={{ display: 'flex', padding: '$spacing-sm 0', borderBottom: '1rpx solid $color-divider' }}>
+                    <Text style={{ width: '160rpx', fontSize: '$font-size-sm', color: '$color-text-tertiary' }}>文件大小</Text>
+                    <Text style={{ flex: 1, fontSize: '$font-size-sm', color: '$color-text-primary' }}>
+                      {previewAttachment.size}
+                    </Text>
+                  </View>
+                  <View style={{ display: 'flex', padding: '$spacing-sm 0' }}>
+                    <Text style={{ width: '160rpx', fontSize: '$font-size-sm', color: '$color-text-tertiary' }}>上传时间</Text>
+                    <Text style={{ flex: 1, fontSize: '$font-size-sm', color: '$color-text-primary' }}>
+                      {previewAttachment.uploadedAt}
+                    </Text>
+                  </View>
                 </View>
               </>
             )}

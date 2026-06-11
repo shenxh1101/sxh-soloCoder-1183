@@ -209,3 +209,22 @@
     color: $color-primary;
   }
 }
+
+.btnDefault {
+  background: rgba($color-success, 0.1);
+
+  .actionBtnText {
+    color: $color-success;
+  }
+}
+
+.actionHint {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actionHintText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}

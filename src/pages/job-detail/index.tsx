@@ -100,55 +100,63 @@ const JobDetailPage: React.FC = () => {
           </View>
         </View>
 
-        <View className={styles.section}>
-          <View className={styles.sectionTitle}>
-            <Text className={styles.sectionIcon}>🏷</Text>
-            职位标签
+        {(localJob.tags && localJob.tags.length > 0) && (
+          <View className={styles.section}>
+            <View className={styles.sectionTitle}>
+              <Text className={styles.sectionIcon}>🏷</Text>
+              职位标签
+            </View>
+            <View className={styles.tagsList}>
+              {localJob.tags.map((tag) => (
+                <View key={tag} className={styles.tag}>
+                  <Text className={styles.tagText}>{tag}</Text>
+                </View>
+              ))}
+            </View>
           </View>
-          <View className={styles.tagsList}>
-            {localJob.tags.map((tag) => (
-              <View key={tag} className={styles.tag}>
-                <Text className={styles.tagText}>{tag}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        )}
 
-        <View className={styles.section}>
-          <View className={styles.sectionTitle}>
-            <Text className={styles.sectionIcon}>📝</Text>
-            职位描述
+        {localJob.description && (
+          <View className={styles.section}>
+            <View className={styles.sectionTitle}>
+              <Text className={styles.sectionIcon}>📝</Text>
+              职位描述
+            </View>
+            <Text className={styles.description}>{localJob.description}</Text>
           </View>
-          <Text className={styles.description}>{localJob.description}</Text>
-        </View>
+        )}
 
-        <View className={styles.section}>
-          <View className={styles.sectionTitle}>
-            <Text className={styles.sectionIcon}>✅</Text>
-            任职要求
+        {localJob.requirements && localJob.requirements.length > 0 && (
+          <View className={styles.section}>
+            <View className={styles.sectionTitle}>
+              <Text className={styles.sectionIcon}>✅</Text>
+              任职要求
+            </View>
+            <View className={styles.requirements}>
+              {localJob.requirements.map((req, index) => (
+                <Text key={index} className={styles.requirementItem}>
+                  {req}
+                </Text>
+              ))}
+            </View>
           </View>
-          <View className={styles.requirements}>
-            {localJob.requirements.map((req, index) => (
-              <Text key={index} className={styles.requirementItem}>
-                {req}
-              </Text>
-            ))}
-          </View>
-        </View>
+        )}
 
-        <View className={styles.section}>
-          <View className={styles.sectionTitle}>
-            <Text className={styles.sectionIcon}>🎁</Text>
-            福利待遇
+        {localJob.benefits && localJob.benefits.length > 0 && (
+          <View className={styles.section}>
+            <View className={styles.sectionTitle}>
+              <Text className={styles.sectionIcon}>🎁</Text>
+              福利待遇
+            </View>
+            <View className={styles.benefits}>
+              {localJob.benefits.map((benefit, index) => (
+                <Text key={index} className={styles.benefitItem}>
+                  {benefit}
+                </Text>
+              ))}
+            </View>
           </View>
-          <View className={styles.benefits}>
-            {localJob.benefits.map((benefit, index) => (
-              <Text key={index} className={styles.benefitItem}>
-                {benefit}
-              </Text>
-            ))}
-          </View>
-        </View>
+        )}
 
         <View className={styles.section}>
           <View className={styles.sectionTitle}>
@@ -156,7 +164,7 @@ const JobDetailPage: React.FC = () => {
             发布信息
           </View>
           <Text className={styles.description}>
-            发布时间：{localJob.publishedAt}
+            发布时间：{localJob.publishedAt || '刚刚'}
           </Text>
         </View>
       </ScrollView>

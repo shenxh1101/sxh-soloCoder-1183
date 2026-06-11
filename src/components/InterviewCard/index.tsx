@@ -27,6 +27,7 @@ const resultMap: Record<string, { label: string; style: string }> = {
 const InterviewCard: React.FC<InterviewCardProps> = ({ interview, onAction, onTap }) => {
   const statusInfo = statusMap[interview.status] || statusMap.pending;
   const resultInfo = interview.result ? resultMap[interview.result] : null;
+  const isUpcoming = ['pending', 'confirmed', 'rescheduled'].includes(interview.status);
 
   return (
     <View className={styles.card} onClick={() => onTap?.(interview.id)}>
@@ -73,13 +74,13 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview, onAction, onTa
         {interview.status === 'pending' && (
           <>
             <View
-              className={classnames(styles.actionBtn, styles.btnConfirm)}
+              className={classnames(styles.actionBtn, styles.btnDefault)}
               onClick={(e) => {
                 e.stopPropagation();
-                onAction?.(interview.id, 'confirm');
+                onAction?.(interview.id, 'remind');
               }}
             >
-              <Text className={styles.actionBtnText}>确认面试</Text>
+              <Text className={styles.actionBtnText}>发送提醒</Text>
             </View>
             <View
               className={classnames(styles.actionBtn, styles.btnReschedule)}
@@ -90,18 +91,69 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview, onAction, onTa
             >
               <Text className={styles.actionBtnText}>改期</Text>
             </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnConfirm)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'confirm');
+              }}
+            >
+              <Text className={styles.actionBtnText}>确认面试</Text>
+            </View>
           </>
         )}
         {interview.status === 'confirmed' && (
-          <View
-            className={classnames(styles.actionBtn, styles.btnReschedule)}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAction?.(interview.id, 'reschedule');
-            }}
-          >
-            <Text className={styles.actionBtnText}>申请改期</Text>
-          </View>
+          <>
+            <View
+              className={classnames(styles.actionBtn, styles.btnDefault)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'remind');
+              }}
+            >
+              <Text className={styles.actionBtnText}>发送提醒</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnRecord)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'record');
+              }}
+            >
+              <Text className={styles.actionBtnText}>完成记录</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnReschedule)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'reschedule');
+              }}
+            >
+              <Text className={styles.actionBtnText}>申请改期</Text>
+            </View>
+          </>
+        )}
+        {interview.status === 'rescheduled' && (
+          <>
+            <View
+              className={classnames(styles.actionBtn, styles.btnDefault)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'remind');
+              }}
+            >
+              <Text className={styles.actionBtnText}>发送提醒</Text>
+            </View>
+            <View
+              className={classnames(styles.actionBtn, styles.btnConfirm)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction?.(interview.id, 'confirm');
+              }}
+            >
+              <Text className={styles.actionBtnText}>确认面试</Text>
+            </View>
+          </>
         )}
         {interview.status === 'completed' && !interview.result && (
           <View
@@ -111,7 +163,23 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview, onAction, onTa
               onAction?.(interview.id, 'record');
             }}
           >
-            <Text className={styles.actionBtnText}>记录结果</Text>
+            <Text className={styles.actionBtnText}>补录结果</Text>
+          </View>
+        )}
+        {interview.status === 'completed' && interview.result && (
+          <View
+            className={classnames(styles.actionBtn, styles.btnRecord)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAction?.(interview.id, 'record');
+            }}
+          >
+            <Text className={styles.actionBtnText}>修改结果</Text>
+          </View>
+        )}
+        {!isUpcoming && interview.status !== 'completed' && (
+          <View className={styles.actionHint}>
+            <Text className={styles.actionHintText}>该面试已结束</Text>
           </View>
         )}
       </View>
