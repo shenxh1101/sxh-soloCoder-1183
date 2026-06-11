@@ -230,3 +230,29 @@
 .applyBtnTextApplied {
   color: $color-text-tertiary;
 }
+
+.offlineBanner {
+  padding: $spacing-sm $spacing-md;
+  background: #fff7e6;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+  border: 1rpx solid #ffd591;
+}
+
+.offlineBannerText {
+  font-size: $font-size-sm;
+  color: #d48806;
+}
+
+.applyBtnOffline {
+  background: $color-text-disabled !important;
+  background-image: none !important;
+}
+
+.applyBtnTextOffline {
+  color: $color-text-white !important;
+}
+
+.iconBtnDisabled {
+  opacity: 0.5;
+}

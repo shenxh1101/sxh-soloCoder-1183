@@ -13,7 +13,7 @@ const ChatDetailPage: React.FC = () => {
   const chatId = router.params.id || '';
   const { role } = useUserStore();
   const { getChatById, getMessages, sendMessage, markAsRead, markJobCardApplied } = useMessageStore();
-  const { jobs, getJobById } = useJobStore();
+  const { jobs, getJobById, getAppliedJobs } = useJobStore();
 
   const [messageList, setMessageList] = useState(getMessages(chatId));
   const [chatInfo, setChatInfo] = useState(getChatById(chatId));
@@ -22,6 +22,20 @@ const ChatDetailPage: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [greeting, setGreeting] = useState('');
   const scrollRef = useRef<any>(null);
+
+  const syncJobCardAppliedStatus = () => {
+    const messages = getMessages(chatId);
+    const appliedJobs = getAppliedJobs();
+    const appliedJobIds = new Set(appliedJobs.map((j) => j.id));
+
+    messages.forEach((msg) => {
+      if (msg.type === 'job_card' && msg.jobCard && !msg.jobApplied) {
+        if (appliedJobIds.has(msg.jobCard.id)) {
+          markJobCardApplied(chatId, msg.jobCard.id);
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     const chat = getChatById(chatId);
@@ -32,12 +46,18 @@ const ChatDetailPage: React.FC = () => {
       if (chat.unreadCount > 0) {
         markAsRead(chatId);
       }
+      if (role === 'seeker') {
+        syncJobCardAppliedStatus();
+      }
     }
-  }, [chatId, getChatById, getMessages, markAsRead]);
+  }, [chatId, getChatById, getMessages, markAsRead, role]);
 
   useDidShow(() => {
     setMessageList(getMessages(chatId));
     setChatInfo(getChatById(chatId));
+    if (role === 'seeker') {
+      syncJobCardAppliedStatus();
+    }
   });
 
   const handleSend = () => {

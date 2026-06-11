@@ -6,13 +6,12 @@ import type { AttachmentItem } from '@/types';
 import styles from './index.module.scss';
 
 const ResumePage: React.FC = () => {
-  const { resume, calculateCompletion } = useResumeStore();
-  const completion = calculateCompletion();
+  const { resume } = useResumeStore();
+  const completion = resume.completion || 0;
   const [showAttachmentPreview, setShowAttachmentPreview] = useState<string | null>(null);
   const [previewAttachment, setPreviewAttachment] = useState<AttachmentItem | null>(null);
 
   useDidShow(() => {
-    // 页面显示时自动刷新 - useResumeStore 响应式，无需手动刷新
   });
 
   const handleEdit = () => {

@@ -20,7 +20,8 @@ const JobsPage: React.FC = () => {
     type: '',
   });
 
-  const { jobs, toggleBookmark } = useJobStore();
+  const { jobs, getOnlineJobs, toggleBookmark } = useJobStore();
+  const visibleJobs = getOnlineJobs();
 
   const filterConfigs: { key: FilterKey; label: string; options: typeof salaryRanges }[] = [
     { key: 'salary', label: '薪资', options: salaryRanges },
@@ -29,7 +30,7 @@ const JobsPage: React.FC = () => {
   ];
 
   const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
+    return visibleJobs.filter((job) => {
       if (searchKeyword) {
         const kw = searchKeyword.toLowerCase();
         if (
@@ -51,18 +52,18 @@ const JobsPage: React.FC = () => {
       }
       return true;
     });
-  }, [jobs, searchKeyword, filterValues]);
+  }, [visibleJobs, searchKeyword, filterValues]);
 
   const handleBookmark = useCallback(
     (id: string) => {
-      const job = jobs.find((j) => j.id === id);
+      const job = visibleJobs.find((j) => j.id === id);
       toggleBookmark(id);
       Taro.showToast({
         title: job?.isBookmarked ? '已取消收藏' : '已收藏',
         icon: 'none',
       });
     },
-    [jobs, toggleBookmark]
+    [visibleJobs, toggleBookmark]
   );
 
   const handleTapJob = useCallback((id: string) => {

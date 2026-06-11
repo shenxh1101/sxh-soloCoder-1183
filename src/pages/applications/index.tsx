@@ -33,16 +33,18 @@ const ApplicationsPage: React.FC = () => {
   const jobTitleFromUrl = router.params.jobTitle ? decodeURIComponent(router.params.jobTitle) : '';
   const [activeTab, setActiveTab] = useState<StatusType>('all');
   const [selectedJob, setSelectedJob] = useState<string>(jobTitleFromUrl || 'all');
-  const { applications, updateApplicationStatus } = useApplicationStore();
+  const { getApplicationsByJob, updateApplicationStatus } = useApplicationStore();
   const { addInterview } = useInterviewStore();
   const { getCompanyJobs } = useJobStore();
 
-  const companyJobs = getCompanyJobs(mockUserProfile.companyName);
+  const currentCompanyName = mockUserProfile.companyName;
+  const companyJobs = getCompanyJobs(currentCompanyName);
+  const companyApplications = getApplicationsByJob('all', currentCompanyName);
 
   const filteredByJob = useMemo(() => {
-    if (selectedJob === 'all') return applications;
-    return applications.filter((app) => app.jobTitle === selectedJob);
-  }, [selectedJob, applications]);
+    if (selectedJob === 'all') return companyApplications;
+    return companyApplications.filter((app) => app.jobTitle === selectedJob);
+  }, [selectedJob, companyApplications]);
 
   const filteredApplications = useMemo(() => {
     if (activeTab === 'all') return filteredByJob;

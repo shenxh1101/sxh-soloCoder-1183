@@ -1,21 +1,31 @@
 import { create } from 'zustand';
 import type { Application } from '@/types';
 import { mockApplications } from '@/data/profile';
+import { mockUserProfile } from '@/data/profile';
 
 interface ApplicationState {
   applications: Application[];
-  getApplicationsByJob: (jobId?: string) => Application[];
+  getApplicationsByCompany: (companyName: string) => Application[];
+  getApplicationsByJob: (jobId?: string, companyName?: string) => Application[];
   updateApplicationStatus: (id: string, status: Application['status']) => void;
   addApplication: (application: Omit<Application, 'id' | 'appliedAt' | 'status'> & { jobId: string }) => void;
-  getApplicationsByStatus: (status: Application['status']) => Application[];
+  getApplicationsByStatus: (status: Application['status'], companyName?: string) => Application[];
 }
 
 export const useApplicationStore = create<ApplicationState>((set, get) => ({
   applications: mockApplications,
 
-  getApplicationsByJob: (jobId) => {
-    if (!jobId) return get().applications;
-    return get().applications.filter((a) => a.jobTitle === jobId);
+  getApplicationsByCompany: (companyName) => {
+    return get().applications.filter((a) => a.companyName === companyName);
+  },
+
+  getApplicationsByJob: (jobId, companyName) => {
+    let result = get().applications;
+    if (companyName) {
+      result = result.filter((a) => a.companyName === companyName);
+    }
+    if (!jobId || jobId === 'all') return result;
+    return result.filter((a) => a.jobTitle === jobId);
   },
 
   updateApplicationStatus: (id, status) => {
@@ -41,7 +51,11 @@ export const useApplicationStore = create<ApplicationState>((set, get) => ({
     }));
   },
 
-  getApplicationsByStatus: (status) => {
-    return get().applications.filter((a) => a.status === status);
+  getApplicationsByStatus: (status, companyName) => {
+    let result = get().applications;
+    if (companyName) {
+      result = result.filter((a) => a.companyName === companyName);
+    }
+    return result.filter((a) => a.status === status);
   },
 }));

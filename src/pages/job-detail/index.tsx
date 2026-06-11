@@ -6,6 +6,7 @@ import { useJobStore } from '@/store/useJobStore';
 import { useApplicationStore } from '@/store/useApplicationStore';
 import { useResumeStore } from '@/store/useResumeStore';
 import { useMessageStore } from '@/store/useMessageStore';
+import { useUserStore } from '@/store/useUserStore';
 import styles from './index.module.scss';
 
 const JobDetailPage: React.FC = () => {
@@ -16,9 +17,12 @@ const JobDetailPage: React.FC = () => {
   const { addApplication } = useApplicationStore();
   const { resume } = useResumeStore();
   const { markJobCardApplied } = useMessageStore();
+  const { role } = useUserStore();
 
   const job = getJobById(jobId);
   const [localJob, setLocalJob] = useState(job);
+  const isOffline = localJob?.status === 'offline';
+  const isSeeker = role === 'seeker';
 
   useEffect(() => {
     const currentJob = getJobById(jobId);
@@ -36,6 +40,10 @@ const JobDetailPage: React.FC = () => {
   }
 
   const handleBookmark = () => {
+    if (isOffline && isSeeker) {
+      Taro.showToast({ title: '该职位已下架', icon: 'none' });
+      return;
+    }
     toggleBookmark(jobId);
     setLocalJob(getJobById(jobId));
     Taro.showToast({
@@ -45,6 +53,10 @@ const JobDetailPage: React.FC = () => {
   };
 
   const handleApply = () => {
+    if (isOffline && isSeeker) {
+      Taro.showToast({ title: '该职位已下架，无法投递', icon: 'none' });
+      return;
+    }
     if (localJob.isApplied) {
       Taro.showToast({ title: '您已投递过该职位', icon: 'none' });
       return;
@@ -68,6 +80,10 @@ const JobDetailPage: React.FC = () => {
   };
 
   const handleChat = () => {
+    if (isOffline && isSeeker) {
+      Taro.showToast({ title: '该职位已下架', icon: 'none' });
+      return;
+    }
     Taro.showToast({ title: '消息功能开发中', icon: 'none' });
   };
 
@@ -75,6 +91,11 @@ const JobDetailPage: React.FC = () => {
     <View className={styles.container}>
       <ScrollView scrollY>
         <View className={styles.headerSection}>
+          {isOffline && isSeeker && (
+            <View className={styles.offlineBanner}>
+              <Text className={styles.offlineBannerText}>⚠️ 该职位已暂停招聘</Text>
+            </View>
+          )}
           <View className={styles.titleRow}>
             <Text className={styles.title}>{localJob.title}</Text>
             <View
@@ -178,24 +199,29 @@ const JobDetailPage: React.FC = () => {
       </ScrollView>
 
       <View className={styles.bottomBar}>
-        <View className={styles.iconBtn} onClick={handleChat}>
+        <View
+          className={classnames(styles.iconBtn, isOffline && isSeeker && styles.iconBtnDisabled)}
+          onClick={handleChat}
+        >
           <Text className={styles.iconBtnIcon}>💬</Text>
           <Text className={styles.iconBtnText}>沟通</Text>
         </View>
         <View
           className={classnames(
             styles.applyBtn,
-            localJob.isApplied && styles.applyBtnApplied
+            localJob.isApplied && styles.applyBtnApplied,
+            isOffline && isSeeker && styles.applyBtnOffline
           )}
           onClick={handleApply}
         >
           <Text
             className={classnames(
               styles.applyBtnText,
-              localJob.isApplied && styles.applyBtnTextApplied
+              localJob.isApplied && styles.applyBtnTextApplied,
+              isOffline && isSeeker && styles.applyBtnTextOffline
             )}
           >
-            {localJob.isApplied ? '已投递' : '立即投递'}
+            {isOffline && isSeeker ? '已下架' : localJob.isApplied ? '已投递' : '立即投递'}
           </Text>
         </View>
       </View>
